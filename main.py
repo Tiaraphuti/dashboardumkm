@@ -1394,6 +1394,104 @@ with col2:
         fig_sertifikasi,
         use_container_width=True
     )
+
+# =====================================
+# FAKTOR PENTING PENGEMBANGAN UMKM
+# =====================================
+st.markdown("---")
+
+st.markdown(
+    """
+    <div style="
+        background-color:#E5E5E5;
+        padding:10px;
+        border:1px solid #CFCFCF;
+        text-align:center;
+        font-size:28px;
+        font-weight:bold;
+        border-radius:6px;
+    ">
+        FAKTOR PENTING PENGEMBANGAN UMKM
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# =====================================
+# LOAD FEATURE IMPORTANCE
+# =====================================
+importance_df = pd.read_excel(
+    "feature_importance.xlsx"
+)
+
+# pastikan numerik
+importance_df["Important Score"] = pd.to_numeric(
+    importance_df["Important Score"],
+    errors="coerce"
+)
+
+importance_df = importance_df.dropna()
+
+# =====================================
+# INSIGHT TOP 3
+# =====================================
+top3 = (
+    importance_df
+    .sort_values(
+        "Important Score",
+        ascending=False
+    )
+    .head(3)["Feature"]
+    .tolist()
+)
+
+st.info(
+    f"""
+    Berdasarkan hasil analisis feature importance,
+    faktor yang paling berpengaruh terhadap
+    pengembangan kelas UMKM adalah:
+
+    **1. {top3[0]}**  
+    **2. {top3[1]}**  
+    **3. {top3[2]}**
+    """
+)
+
+# =====================================
+# PLOT
+# =====================================
+importance_plot = (
+    importance_df
+    .sort_values(
+        "Important Score",
+        ascending=True
+    )
+)
+
+fig_importance = px.bar(
+    importance_plot,
+    x="Important Score",
+    y="Feature",
+    orientation="h",
+    text="Important Score",
+    title="Ranking Faktor Penting Pengembangan UMKM"
+)
+
+fig_importance.update_traces(
+    textposition="outside"
+)
+
+fig_importance.update_layout(
+    height=650,
+    xaxis_title="Important Score",
+    yaxis_title=""
+)
+
+st.plotly_chart(
+    fig_importance,
+    use_container_width=True
+)
+    
 # =====================================
 # DATAFRAME
 # =====================================
